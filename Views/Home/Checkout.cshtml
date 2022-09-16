@@ -1,0 +1,71 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{  ViewData["Title"] = "Checkout";
+    var Discount = ViewData["Discount"]??0.0;
+    double sum=0;
+
+    var Cart = ViewData["Cart"] as List<Product>;
+
+    if(Cart != null)
+    {
+        sum = Cart.Sum(c => c.Quantity * c.Price);
+    }
+    double Withdiscount = sum * (double)Discount;
+    double Topay = sum - Withdiscount;
+}
+@model Product;
+<div class="text-center">
+    <h4>Goods</h4>
+
+    @if (Cart!=null)
+    {
+        <div class="row justify-content-center mt-5">
+            <ul style="min-height:300px;" class="col-10">
+
+                @foreach (Product item in Cart)
+                {
+                    <li class=" w-100 my-2 d-flex flex-row justify-content-between align-items-center">
+
+                        <img src="~/@item.ImageUrl" width="100" /> <h6>@item.Name</h6> <span>Quantity: @item.Quantity  unit Price: $@item.Price</span>
+                    </li>
+                }
+
+                <li class="border p-1 w-100 my-2 d-flex flex-wow justify-content-between align-items-center py-2">Discount <span>$@Discount.ToString()</span></li>
+                <li class="border p-1 w-100 my-2 d-flex flex-wow justify-content-between align-items-center py-2">Checkout sum  <span>$@Topay.ToString()</span></li>
+
+
+
+
+            </ul>
+
+            <button onclick="window.print()" class="bt border-0 me-3 bg-white">
+                Pdf
+            </button>
+            @using (Html.BeginForm("Export", "Home", FormMethod.Post))
+            {
+                <input type="hidden" name="GridHtml" />
+                <input class="bt border-0 mt-3 bg-white" type="submit" id="btnSubmit" value="text" />
+            }
+            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+            <script type="text/javascript">$(function () {
+                    $("#btnSubmit").click(function () {
+                        $("input[name='GridHtml']").val($("#Grid").html());
+                    });
+                });</script>
+        </div>
+    }
+    else
+    {
+        <h4 class="mt-5">Nothing to checkout</h4>
+
+    }
+
+
+
+
+
+
+
+
+</div>

@@ -1,0 +1,76 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{  ViewData["Title"] = "Cart";
+    var Discount = ViewData["Discount"]??0.0;
+    double sum=0;
+
+    var Cart = ViewData["Cart"] as List<Product>;
+
+    if(Cart != null)
+    {
+        sum = Cart.Sum(c => c.Quantity * c.Price);
+    }
+    double Withdiscount = sum * (double)Discount;
+    double Topay = sum - Withdiscount;
+}
+@model Product;
+<div class="text-center">
+    <h4>Cart</h4>
+
+    @if (Cart!=null)
+    {
+        <div class="row justify-content-center mt-5">
+            <ul style="min-height:300px;" class="col-10">
+
+                @foreach (Product item in Cart)
+                {
+                    <li class=" w-100 my-2 d-flex flex-row justify-content-between align-items-center">
+
+                        <img src="~/@item.ImageUrl" width="100" /> <h6>@item.Name</h6> <span>Quantity: @item.Quantity  unit Price: $@item.Price</span>
+                    </li>
+                }
+
+                <li class="border p-1 w-100 my-2 d-flex flex-wow justify-content-between align-items-center py-4">sum <span>$@sum.ToString()</span></li>
+                <li class="border p-1 w-100 my-2 d-flex flex-wow justify-content-between align-items-center py-2">Discount <span>$@Discount.ToString()</span></li>
+                <li class="border p-1 w-100 my-2 d-flex flex-wow justify-content-between align-items-center py-2">Total  <span>$@Topay.ToString()</span></li>
+                <li class="mt-4 d-flex flex-row justify-content-between">
+                    <div class="d-flex flex-row">
+                        <form method="post" asp-action="Discount">
+                            <input name="Discount" hidden="hidden" value="0.10" />
+                            <button class="btn btn-primary me-3">discount 10%</button>
+                        </form>
+                        <form method="post" asp-action="Discount">
+                            <input name="Discount" hidden="hidden" value="0.05" />
+                            <button class="btn btn-primary">discount 5%</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <form method="post" asp-action="CheckOut">
+                            <input name="CheckoutTotal" hidden="hidden" value="@Topay" />
+                            <button class="btn btn-primary me-3">Checkout</button>
+                        </form>
+                       
+                    </div>
+                </li>
+                <li class="mt-5"><button onclick="location.href='@Url.Action("ClearCart", "Home")'" class="btn btn-secondary">Clear cart</button></li>
+                
+
+            </ul>
+        </div>
+    }
+    else
+    {
+        <h4 class="mt-5">Your shopping cart is empty</h4>
+
+    }
+
+
+
+
+
+
+
+
+</div>

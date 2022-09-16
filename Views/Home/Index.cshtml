@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+
+
+    <div class="pe-3 position-relative float-end">
+        <a asp-controller="Home" asp-action="Cart">
+            @if (ViewBag.Cart != null)
+            {
+                <h6 style="color:tomato;" class="position-absolute">
+
+                    @ViewBag.Cart.Count;
+
+                </h6>
+                }
+          
+            <img width="22" src="./cart.png" />
+        </a>
+    </div>
+    <h4>Shopping DashBoard</h4>
+
+    <div class="mt-5 row flex-wrap">
+       
+        @foreach (Product item in ViewBag.Products)
+        {
+            <div class="col-md-3 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <img width="100" src="@item.ImageUrl" alt="" />
+                        <h3>@item.Name</h3>
+                        <h5>Quantity:@item.Quantity</h5>
+                        <form asp-controller="Home" asp-action="AddCart" method="post">
+                            <input hidden="hidden" name="Id" value="@item.Id" />
+                            <button class="btn btn-primary">Add to cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
